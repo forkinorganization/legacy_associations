@@ -1,4 +1,7 @@
 class Course < ActiveRecord::Base
+  belongs_to :term
+  has_many :course_students
+
   has_many :lessons, dependent: :destroy
   has_many :course_instructors, dependent: :restrict_with_error
   has_many :assignments, dependent: :destroy
@@ -18,6 +21,7 @@ class Course < ActiveRecord::Base
   def self.example_courses
     self.where(public: true).order("id DESC").first(5)
   end
+
 
   # Magic number also used in :active scope above.
   def old?

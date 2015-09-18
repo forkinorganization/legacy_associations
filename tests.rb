@@ -12,8 +12,6 @@ ActiveRecord::Base.establish_connection(
   database: 'test.sqlite3'
 )
 
-ActiveRecord::Migration.verbose = false
-
 # Gotta run migrations before we can run tests.  Down will fail the first time,
 # so we wrap it in a begin/rescue.
 begin ApplicationMigration.migrate(:down); rescue; end
@@ -27,134 +25,75 @@ class ApplicationTest < Minitest::Test
     assert true
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  def test_create_new_school
+    pbg = School.create(name: "PBGHS")
+    assert pbg.name != "highschool"
+    assert pbg.name == "PBGHS"
+  end
+
+  def test_create_new_terms
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+    assert fall.name != "Spring"
+    assert fall.name == "Fall"
+    assert fall.starts_on != "2015-10-16".to_date
+    assert fall.starts_on == "2015-11-16".to_date
+    assert fall.ends_on != "2016-03-20".to_date
+    assert fall.ends_on == "2016-02-20".to_date
+  end
+
+  def test_create_new_courses
+    history = Course.create(name: "History")
+    assert history.name != "English"
+    assert history.name == "History"
+  end
+
+  def test_create_new_assignments
+    classwork = Assignment.create(name: "Classwork")
+    assert classwork.name != "Homework"
+    assert classwork.name == "Classwork"
+  end
+
+  def test_create_new_lesson
+    cajun_louisiana = Lesson.create( name: "Class_lesson")
+    assert cajun_louisiana.name != "Class_lecture"
+    assert cajun_louisiana.name == "Class_lesson"
+  end
+
+  def test_associate_school_with_terms
+    pbg = School.create(name: "PBGHS")
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+
+    pbg.terms << fall
+
+    assert pbg.terms.include?(fall)
+  end
+
+  def test_associate_terms_with_courses
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+    history = Course.create(name: "History")
+
+    fall.courses << history
+
+    assert fall.courses.include?(history)
+  end
+
+  def test_cant_destroy_courses
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+    history = Course.create(name: "History")
+
+    fall.courses << history
+
+    refute fall.destroy
+  end
+
+  def test_associate_courses_with_course_students
+    history = Course.create(name: "History")
+    justis =  CourseStudent.create()
+
+    history.course_students << justis
+
+    assert history.course_students.include?(justis)
+  end
 
   def test_association_lessons_readings
     lesson = Lesson.create(name: "First Lesson")
@@ -276,6 +215,5 @@ class ApplicationTest < Minitest::Test
     assert good_user.save
     refute bad_user.save
   end
-
 
 end
