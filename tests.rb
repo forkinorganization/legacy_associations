@@ -41,19 +41,36 @@ class ApplicationTest < Minitest::Test
     reading_before = Reading.count
     lesson_before = Lesson.count
     lesson_one = Lesson.create(name: "Lesson One")
-    reading_one = Reading.create(order_number: 1, caption:"Reading One", url:"http://google.com", lesson_id: 1)
-    reading_two = Reading.create(order_number: 2, caption:"Reading Two", url:"http://ign.com", lesson_id: 1)
+    reading_one = Reading.create(order_number: 1, caption:"Reading One", url:"http://google.com")
+    reading_two = Reading.create(order_number: 2, caption:"Reading Two", url:"http://ign.com")
 
     lesson_one.readings << reading_one
     lesson_one.readings << reading_two
 
-    assert reading_one.save
-    assert reading_two.save
     assert_equal lesson_before + 1, Lesson.count
     assert_equal reading_before + 2, Reading.count
     assert lesson_one.destroy
     assert_equal lesson_before, Lesson.count
     assert_equal reading_before, Reading.count
+  end
+
+  def test_associate_lesson_with_course
+    lesson_before = Lesson.count
+    course_before = Course.count
+    course_one = Course.create(name: "Course One")
+    lesson_one = Lesson.create(name: "Lesson One")
+    lesson_two = Lesson.create(name: "Lesson One")
+
+    course_one.lessons << lesson_one
+    course_one.lessons << lesson_two
+
+    assert_equal course_one.id, lesson_one.course_id
+    assert_equal course_one.id, lesson_two.course_id
+    assert_equal course_before + 1, Course.count
+    assert_equal lesson_before + 2, Lesson.count
+    assert course_one.destroy
+    assert_equal course_before, Course.count
+    assert_equal lesson_before, Lesson.count
   end
 
 end
