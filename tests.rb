@@ -95,14 +95,12 @@ class ApplicationTest < Minitest::Test
   end
 
   def test_associate_lessons_with_assignments
-    course = Course.create(name: "Course One")
     lesson = Lesson.create(name: "Lesson One")
     assignment = Assignment.create(name: "Homework 1")
 
-    course.lessons << lesson
-    course.assignments << assignment
+    assignment.lessons << lesson
 
-    assert lesson.course.assignments.include?(assignment)
+    assert assignment.lessons.include?(lesson)
   end
 
 end
