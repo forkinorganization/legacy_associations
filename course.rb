@@ -1,4 +1,6 @@
 class Course < ActiveRecord::Base
+  belongs_to :term
+  has_many :course_students 
 
   default_scope { order("courses.term_id DESC, courses.course_code, courses.id DESC") }
 
@@ -13,6 +15,7 @@ class Course < ActiveRecord::Base
   def self.example_courses
     self.where(public: true).order("id DESC").first(5)
   end
+
 
   # Magic number also used in :active scope above.
   def old?

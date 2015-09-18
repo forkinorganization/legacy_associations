@@ -32,15 +32,13 @@ class ApplicationTest < Minitest::Test
   end
 
   def test_create_new_terms
-    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20", school_id: 1)
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
     assert fall.name != "Spring"
     assert fall.name == "Fall"
     assert fall.starts_on != "2015-10-16".to_date
     assert fall.starts_on == "2015-11-16".to_date
     assert fall.ends_on != "2016-03-20".to_date
     assert fall.ends_on == "2016-02-20".to_date
-    assert fall.school_id != 2
-    assert fall.school_id == 1
   end
 
   def test_create_new_courses
@@ -49,8 +47,58 @@ class ApplicationTest < Minitest::Test
     assert history.name == "History"
   end
 
-  def create
+  def test_create_new_assignments
+    classwork = Assignment.create(name: "Classwork")
+    assert classwork.name != "Homework"
+    assert classwork.name == "Classwork"
   end
+
+  def test_create_new_lesson
+    cajun_louisiana = Lesson.create( name: "Class_lesson")
+    assert cajun_louisiana.name != "Class_lecture"
+    assert cajun_louisiana.name == "Class_lesson"
+  end
+
+  def test_associate_school_with_terms
+    pbg = School.create(name: "PBGHS")
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+
+    pbg.terms << fall
+
+    assert pbg.terms.include?(fall)
+  end
+
+  def test_associate_terms_with_courses
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+    history = Course.create(name: "History")
+
+    fall.courses << history
+
+    assert fall.courses.include?(history)
+  end
+
+  def test_cant_destroy_courses
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+    history = Course.create(name: "History")
+
+    fall.courses << history
+
+    refute fall.destroy
+  end
+
+  # Associate courses with course_students (both directions).
+  # If the course has any students associated with it, the course should not be deletable.
+def test_associate_courses_with_course_students
+  history = Course.create(name: "History")
+  justis =  CourseStudent.create()
+
+  history.course_students << justis
+
+  assert history.course_students.include?(justis)
+end
+
+
+
 
 
 
