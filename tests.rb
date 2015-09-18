@@ -148,5 +148,6 @@ class ApplicationTest < Minitest::Test
     assert good_user.save
     refute bad_user.save
   end
+  
 
 end
