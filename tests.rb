@@ -103,4 +103,17 @@ class ApplicationTest < Minitest::Test
     assert assignment.lessons.include?(lesson)
   end
 
+  def test_course_has_readings_through_lessons
+    course = Course.create(name: "Course One")
+    lesson = Lesson.create(name: "Lesson One")
+    reading_one = Reading.create(order_number: 1, caption:"Reading One", url:"http://google.com")
+    reading_two = Reading.create(order_number: 2, caption:"Reading Two", url:"http://ign.com")
+
+    lesson.readings << reading_one
+    course.lessons << lesson
+
+    assert course.readings.include?(reading_one)
+    refute course.readings.include?(reading_two)
+  end
+
 end
