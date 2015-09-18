@@ -25,4 +25,33 @@ class ApplicationTest < Minitest::Test
     assert true
   end
 
+  def test_create_new_school
+    pbg = School.create(name: "PBGHS")
+    assert pbg.name != "highschool"
+    assert pbg.name == "PBGHS"
+  end
+
+  def test_create_new_terms
+    fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20", school_id: 1)
+    assert fall.name != "Spring"
+    assert fall.name == "Fall"
+    assert fall.starts_on != "2015-10-16".to_date
+    assert fall.starts_on == "2015-11-16".to_date
+    assert fall.ends_on != "2016-03-20".to_date
+    assert fall.ends_on == "2016-02-20".to_date
+    assert fall.school_id != 2
+    assert fall.school_id == 1
+  end
+
+  def test_create_new_courses
+    history = Course.create(name: "History")
+    assert history.name != "English"
+    assert history.name == "History"
+  end
+
+  def create
+  end
+
+
+
 end
