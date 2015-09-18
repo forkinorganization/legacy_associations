@@ -32,7 +32,6 @@ class ApplicationTest < Minitest::Test
     reading = Reading.create(caption: "chapter 1", url: "http://www.readingsite.comt", order_number: 1)
 
     lesson.readings << reading
-
     assert lesson.readings.include?(reading)
     assert_equal lesson.id, reading.lesson_id
   end
@@ -148,6 +147,6 @@ class ApplicationTest < Minitest::Test
     assert good_user.save
     refute bad_user.save
   end
-  
+
 
 end
