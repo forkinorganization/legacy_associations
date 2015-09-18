@@ -33,7 +33,7 @@ class ApplicationTest < Minitest::Test
 
     lesson.readings << reading
 
-    assert_equal [reading], lesson.readings
+    assert lesson.readings.include?(reading)
     assert_equal lesson.id, reading.lesson_id
   end
 
@@ -73,6 +73,25 @@ class ApplicationTest < Minitest::Test
     assert_equal lesson_before, Lesson.count
   end
 
+  def test_associate_courses_with_instructors
+    course = Course.create(name: "Course One")
+    instructor_one = CourseInstructor.create()
 
+    course.course_instructors << instructor_one
+
+    assert course.course_instructors.include?(instructor_one)
+  end
+
+  def test_course_is_not_destroyed_if_has_instructor
+    instructor_count = CourseInstructor.count
+    course_count = Course.count
+
+    course = Course.create(name: "Course One")
+    instructor_one = CourseInstructor.create()
+
+    course.course_instructors << instructor_one
+
+    refute course.destroy
+  end
 
 end
