@@ -116,4 +116,20 @@ class ApplicationTest < Minitest::Test
     refute course.readings.include?(reading_two)
   end
 
+  def test_validate_school_has_name
+    high_school = School.new(name: "High School")
+    no_school = School.new()
+
+    assert high_school.save
+    refute no_school.save
+  end
+
+  def test_validate_terms_have_name_starts_on_ends_on_school_id
+    school = School.create(name: "High School")
+    good_term = Term.new(name: "Fall", starts_on: Date.today, ends_on: Date.today + 3.months, school_id: school.id)
+    bad_term = Term.new(name: "Bad", starts_on: Date.today, ends_on: Date.today + 3.months)
+
+    assert good_term.save
+    refute bad_term.save
+  end
 end
