@@ -94,7 +94,7 @@ class ApplicationTest < Minitest::Test
     refute course.destroy
   end
 
-  def test_associate_lessons_with_assignments
+  def test_associate_lessons_with_in_class_assignments
     lesson = Lesson.create(name: "Lesson One")
     assignment = Assignment.create(name: "Homework 1")
 
@@ -132,4 +132,21 @@ class ApplicationTest < Minitest::Test
     assert good_term.save
     refute bad_term.save
   end
+
+  def test_validate_user_has_email_first_last_name
+    good_user = User.new(first_name: "Bruce", last_name: "Wayne", email: "the_night@imbatman.com")
+    bad_user = User.new(first_name: "Harvey", last_name: "Dent")
+
+    assert good_user.save
+    refute bad_user.save
+  end
+
+  def test_email_uniqueness
+    good_user = User.new(first_name: "Bruce", last_name: "Wayne", email: "batman@imbatman.com")
+    bad_user = User.new(first_name: "Harvey", last_name: "Dent", email: "batman@imbatman.com")
+
+    assert good_user.save
+    refute bad_user.save
+  end
+
 end
