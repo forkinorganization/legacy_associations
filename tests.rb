@@ -73,4 +73,6 @@ class ApplicationTest < Minitest::Test
     assert_equal lesson_before, Lesson.count
   end
 
+
+
 end
