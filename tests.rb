@@ -50,10 +50,11 @@ class ApplicationTest < Minitest::Test
   end
 
   def test_create_new_assignments
-    classwork = Assignment.create(name: "Classwork")
-    assert classwork.name != "Homework"
-    assert classwork.name == "Classwork"
+    reading = Assignment.create(name: "Reading")
+    assert reading.name != "Homework"
+    assert reading.name == "Reading"
   end
+
 
   def test_create_new_lesson
     cajun_louisiana = Lesson.create( name: "Class_lesson")
@@ -96,6 +97,76 @@ class ApplicationTest < Minitest::Test
 
     assert history.course_students.include?(justis)
   end
+
+  def test_cant_destroy_student_courses
+    history = Course.create(name: "History")
+    justis =  CourseStudent.create()
+
+    history.course_students << justis
+
+    refute history.destroy
+  end
+
+# Associate assignments with courses (both directions).
+# When a course is destroyed, its assignments should be automatically destroyed.
+
+  def test_associate_assignments_with_courses
+    reading = Assignment.create(name: "Reading")
+    history = Course.create(name: "History")
+
+  history.assignments << reading
+
+    assert history.assignments.include?(reading)
+  end
+
+  def test_can_destroy_assignments_with_courses
+    reading = Assignment.create(name: "Reading")
+    history = Course.create(name: "History")
+
+    history.assignments << reading
+    history.destroy
+    assert reading.destroyed?
+  end
+
+  # Associate lessons with their pre_class_assignments (both directions).
+  def test_associate_lessons_with_pre_class_assignments
+    cajun_louisiana = Lesson.create( name: "Class_lesson")
+    reading = Assignment.create(name: "Reading")
+
+    reading.pre_lessons << cajun_louisiana
+
+    assert reading.reload.pre_lessons.include?(cajun_louisiana)
+  end
+
+  # Set up a School to have many courses through the school's terms.
+  # def test_school_to_has_courses_through_terms
+  #   pbg = School.create(name: "PBGHS")
+  #   history = Course.create(name: "History")
+  #   fall = Term.create(name: "Fall", starts_on: "2015-11-16",  ends_on: "2016-02-20")
+  #
+  #   course.terms << history
+  #   school.course << course
+  #
+  #   assert school.terms.include?(pbg)
+  #   refute school.terms.include?(highschool)
+  # end
+
+
+
+
+
+  # Validate that Lessons have names.
+
+
+
+
+
+
+
+
+
+
+
 
   def test_association_lessons_readings
     lesson = Lesson.create(name: "First Lesson")
@@ -167,9 +238,9 @@ class ApplicationTest < Minitest::Test
     lesson = Lesson.create(name: "Lesson One")
     assignment = Assignment.create(name: "Homework 1")
 
-    assignment.lessons << lesson
+    assignment.in_lessons << lesson
 
-    assert assignment.lessons.include?(lesson)
+    assert assignment.reload.in_lessons.include?(lesson)
   end
 
   def test_course_has_readings_through_lessons

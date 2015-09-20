@@ -1,6 +1,10 @@
 class Lesson < ActiveRecord::Base
+  # validates :name, presence: true
+  # Lesson.create(name: "Class_lesson").valid? # => true
+  # Lesson.create(name: nil).valid? # => false
   has_many :readings, dependent: :destroy
-  belongs_to :assignment
+  belongs_to :pre_class_assignment, class_name: "Assignment"
+  belongs_to :course
 
   delegate :code_and_name, to: :course, prefix: true
 

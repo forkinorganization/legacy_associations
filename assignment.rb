@@ -1,5 +1,9 @@
 class Assignment < ActiveRecord::Base
-  has_many :lessons, foreign_key: :in_class_assignment_id
+  has_many :pre_lessons, foreign_key: :pre_class_assignment_id, class_name: "Lesson"
+  has_many :in_lessons, foreign_key: :in_class_assignment_id, class_name: "Lesson"
+  belongs_to :course
+
+
 
   scope :active_for_students, -> { where("active_at <= ? AND due_at >= ? AND students_can_submit = ?", Time.now, Time.now, true) }
 
@@ -8,6 +12,7 @@ class Assignment < ActiveRecord::Base
   def status(user = nil)
     AssignmentStatus.new(assignment: self, user: user)
   end
+
 
   def turn_in(answers, user, final=true)
     if can_be_turned_in_by(user)
